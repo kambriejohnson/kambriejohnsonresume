@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germany Wordle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f4f9;
+        }
+        .board {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            border: 2px solid #ccc;
+            font-size: 24px;
+            text-align: center;
+            line-height: 50px;
+        }
+        .correct {
+            background-color: green;
+            color: white;
+        }
+        .misplaced {
+            background-color: yellow;
+            color: black;
+        }
+        .wrong {
+            background-color: gray;
+            color: white;
+        }
+        .input-box {
+            margin-top: 20px;
+        }
+        input {
+            font-size: 20px;
+            padding: 10px;
+            text-transform: uppercase;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .new-game {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Germany Wordle</h1>
+    <p>Guess the 5-letter German city!</p>
+
+    <div class="board" id="board"></div>
+
+    <div class="input-box">
+        <input type="text" id="guess" maxlength="5" placeholder="Enter 5-letter city" />
+        <button onclick="checkGuess()">Guess</button>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <button class="new-game" onclick="newGame()">New Game</button>
+
+    <script>
+        const cities = ["hagen", "essen", "basal", "wesel", "celle", "halle", "herne", "stade", "kleve", "zeitz"];
+        let selectedCity = cities[Math.floor(Math.random() * cities.length)];
+        let attempts = 0;
+
+        function newGame() {
+            selectedCity = cities[Math.floor(Math.random() * cities.length)];
+            attempts = 0;
+            document.getElementById("message").innerHTML = '';
+            document.getElementById("board").innerHTML = '';
+            document.getElementById("guess").value = '';
+            renderBoard();
+        }
+
+        function renderBoard() {
+            const board = document.getElementById("board");
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement("div");
+                row.classList.add("row");
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function checkGuess() {
+            const guess = document.getElementById("guess").value.toLowerCase();
+            if (guess.length !== 5) {
+                alert("Please enter a 5-letter city!");
+                return;
+            }
+            if (!cities.includes(guess)) {
+                alert("That's not a valid German city!");
+                return;
+            }
+
+            attempts++;
+            const row = document.getElementsByClassName("row")[attempts - 1];
+            for (let i = 0; i < 5; i++) {
+                const cell = row.children[i];
+                const letter = guess[i];
+                if (letter === selectedCity[i]) {
+                    cell.classList.add("correct");
+                    cell.innerHTML = letter.toUpperCase();
+                } else if (selectedCity.includes(letter)) {
+                    cell.classList.add("misplaced");
+                    cell.innerHTML = letter.toUpperCase();
+                } else {
+                    cell.classList.add("wrong");
+                    cell.innerHTML = letter.toUpperCase();
+                }
+            }
+
+            if (guess === selectedCity) {
+                document.getElementById("message").innerHTML = "Congratulations! You guessed the city!";
+            } else if (attempts === 6) {
+                document.getElementById("message").innerHTML = `Game over! The city was ${selectedCity.toUpperCase()}.`;
+            }
+
+            document.getElementById("guess").value = '';
+        }
+
+        renderBoard();
+    </script>
+</body>
+</html>
+
+<br><br><br><br>
+<a href="scratch.html">HOME</a>
